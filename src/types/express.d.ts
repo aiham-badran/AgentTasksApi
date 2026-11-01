@@ -7,6 +7,9 @@ declare global {
         email: string;
       };
     }
+    interface Locals {
+      validatedQuery?: unknown;
+    }
   }
 }
 

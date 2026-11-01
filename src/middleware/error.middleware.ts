@@ -9,11 +9,15 @@ export function errorHandler(err: Error, req: Request, res: Response, _next: Nex
 
   // Zod validation errors
   if (err instanceof ZodError) {
+    const flat = err.flatten();
     res.status(422).json({
       error: {
         code: 'VALIDATION_FAILED',
         message: 'Request validation failed.',
-        details: err.flatten().fieldErrors,
+        details: {
+          ...(flat.formErrors.length > 0 && { _errors: flat.formErrors }),
+          ...flat.fieldErrors,
+        },
         hint: 'Check the request body and try again.',
         request_id: requestId,
         retryable: false,

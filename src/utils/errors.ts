@@ -70,3 +70,15 @@ export class AuthEmailExistsError extends AppError {
     });
   }
 }
+
+export class TaskNotFoundError extends AppError {
+  constructor() {
+    super({
+      code: 'TASK_NOT_FOUND',
+      message: 'Task not found.',
+      statusCode: 404,
+      hint: 'Check the task ID or list your tasks at GET /api/v1/tasks',
+      retryable: false,
+    });
+  }
+}
