@@ -7,8 +7,7 @@ import { logger } from './utils/logger.js';
 import { requestId } from './middleware/requestId.middleware.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import { generalLimiter } from './middleware/rateLimit.middleware.js';
-import { healthRouter } from './routes/health.routes.js';
-import { authRouter } from './modules/auth/auth.routes.js';
+import { apiV1Router, healthRouter } from './routes/index.js';
 
 export function createApp(): Express {
   const app = express();
@@ -45,7 +44,7 @@ export function createApp(): Express {
 
   // ─── Routes ───────────────────────────────
   app.use(healthRouter);
-  app.use('/api/v1/auth', authRouter);
+  app.use('/api/v1', apiV1Router);
 
   // ─── 404 + Errors ─────────────────────────
   app.use(notFoundHandler);
