@@ -1,3 +1,4 @@
+// src/app.ts
 import express, { type Express } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -7,6 +8,7 @@ import { requestId } from './middleware/requestId.middleware.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 import { generalLimiter } from './middleware/rateLimit.middleware.js';
 import { healthRouter } from './routes/health.routes.js';
+import { authRouter } from './modules/auth/auth.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -15,7 +17,7 @@ export function createApp(): Express {
   app.use(helmet());
   app.use(
     cors({
-      origin: '*', // M7: restrict to allowlist
+      origin: '*',
       methods: ['GET', 'POST', 'PATCH', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
     }),
@@ -43,11 +45,7 @@ export function createApp(): Express {
 
   // ─── Routes ───────────────────────────────
   app.use(healthRouter);
-  // M2: app.use('/api/v1/auth', authRouter);
-  // M3: app.use('/api/v1/tasks', tasksRouter);
-  // M4: app.use('/api/v1/settings/ai-keys', aiKeysRouter);
-  // M5: app.use('/api/v1/tasks/nl', nlTasksRouter);
-  // M6: app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use('/api/v1/auth', authRouter);
 
   // ─── 404 + Errors ─────────────────────────
   app.use(notFoundHandler);

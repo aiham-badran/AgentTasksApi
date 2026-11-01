@@ -58,3 +58,15 @@ export class AuthInvalidError extends AppError {
     });
   }
 }
+
+export class AuthEmailExistsError extends AppError {
+  constructor() {
+    super({
+      code: 'AUTH_EMAIL_EXISTS',
+      message: 'An account with this email already exists.',
+      statusCode: 409,
+      hint: 'Try logging in or use a different email.',
+      suggestedAction: 'login',
+    });
+  }
+}
