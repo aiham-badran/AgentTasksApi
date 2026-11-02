@@ -82,3 +82,68 @@ export class TaskNotFoundError extends AppError {
     });
   }
 }
+
+export class AiKeyMissingError extends AppError {
+  constructor() {
+    super({
+      code: 'AI_KEY_MISSING',
+      message: 'No AI provider key configured.',
+      statusCode: 428,
+      hint: 'Add a key at POST /api/v1/settings/ai-keys',
+      suggestedAction: 'add_ai_key',
+    });
+  }
+}
+
+export class AiKeyInvalidError extends AppError {
+  constructor(provider?: string) {
+    super({
+      code: 'AI_KEY_INVALID',
+      message: provider
+        ? `Your ${provider} API key is invalid or has been revoked.`
+        : 'Your AI provider key is invalid or has been revoked.',
+      statusCode: 401,
+      hint: 'Update your key at POST /api/v1/settings/ai-keys',
+      suggestedAction: 'reauth_provider',
+    });
+  }
+}
+
+export class AiQuotaExceededError extends AppError {
+  constructor(provider?: string) {
+    super({
+      code: 'AI_QUOTA_EXCEEDED',
+      message: provider
+        ? `Your ${provider} quota has been exhausted.`
+        : 'Your AI provider quota has been exhausted.',
+      statusCode: 429,
+      hint: 'Wait for the quota to reset or use a different provider.',
+      suggestedAction: 'switch_provider',
+      retryable: true,
+    });
+  }
+}
+
+export class AiProviderError extends AppError {
+  constructor(message = 'The AI provider returned an unexpected error.') {
+    super({
+      code: 'AI_PROVIDER_ERROR',
+      message,
+      statusCode: 502,
+      hint: 'This is usually temporary. Retry in a few seconds.',
+      retryable: true,
+    });
+  }
+}
+
+export class AiKeyNotFoundError extends AppError {
+  constructor() {
+    super({
+      code: 'AI_KEY_NOT_FOUND',
+      message: 'No key is configured for this provider.',
+      statusCode: 404,
+      hint: 'Add a key at POST /api/v1/settings/ai-keys',
+      suggestedAction: 'add_ai_key',
+    });
+  }
+}

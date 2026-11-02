@@ -9,6 +9,7 @@ declare global {
     }
     interface Locals {
       validatedQuery?: unknown;
+      validatedParams?: unknown;
     }
   }
 }
