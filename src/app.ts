@@ -1,6 +1,12 @@
 // src/app.ts
 import express, { type Express } from 'express';
-import { globalStack, notFoundHandler, errorHandler } from './middleware/index.js';
+import {
+  globalStack,
+  notFoundHandler,
+  errorHandler,
+  swaggerDocs,
+  swaggerStack,
+} from './middleware/index.js';
 import { apiV1Router, healthRouter } from './routes/index.js';
 
 export function createApp(): Express {
@@ -8,6 +14,9 @@ export function createApp(): Express {
 
   // ─── Global Middleware (security, parsing, observability, rate limit) ──
   app.use(globalStack);
+
+  // ─── Swagger Setting ──────────────────────────
+  app.use(swaggerDocs, ...swaggerStack);
 
   // ─── Routes ───────────────────────────────
   app.use(healthRouter); // /health (root, for load balancer)
