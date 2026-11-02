@@ -188,3 +188,35 @@ export async function reopenTask(userId: string, taskId: string) {
 
   return serialize(row!);
 }
+
+// ─── Create task from AI-parsed draft (M5) ─────────────────
+export async function createTaskFromAi(
+  userId: string,
+  draft: {
+    title: string;
+    description: string | null;
+    priority: 'low' | 'medium' | 'high' | 'urgent';
+    due_date: string | null;
+  },
+  metadata: {
+    provider: string;
+    model: string;
+    confidence: number;
+    raw_text: string;
+  },
+) {
+  const [row] = await db
+    .insert(tasks)
+    .values({
+      userId,
+      title: draft.title,
+      description: draft.description,
+      priority: draft.priority,
+      dueDate: draft.due_date ? new Date(draft.due_date) : null,
+      source: 'ai_nl',
+      metadata,
+    })
+    .returning();
+
+  return serialize(row!);
+}

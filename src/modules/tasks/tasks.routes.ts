@@ -12,6 +12,8 @@ import {
   completeController,
   reopenController,
 } from './tasks.controller.js';
+import { createNlController } from '../nl-tasks/nl-tasks.controller.js';
+import { createNlTaskSchema } from '../nl-tasks/nl-tasks.schemas.js';
 
 export const tasksRouter = Router();
 
@@ -19,6 +21,9 @@ export const tasksRouter = Router();
 tasksRouter.use(requireAuth);
 
 tasksRouter.post('/', validate(createTaskSchema), createController);
+
+tasksRouter.post('/nl', validate(createNlTaskSchema), createNlController);
+
 tasksRouter.get('/', validate(listTasksQuerySchema, 'query'), listController);
 tasksRouter.get('/:id', getController);
 tasksRouter.patch('/:id', validate(updateTaskSchema), updateController);
