@@ -2,6 +2,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as service from './ai-keys.service.js';
 import type { ProviderId } from '../../providers/registry.js';
+import type { ModelInfo } from '../../providers/types.js';
 
 interface ProviderParam {
   provider: ProviderId;
@@ -56,6 +57,20 @@ export async function validateController(
     const { provider } = res.locals.validatedParams as ProviderParam;
     const result = await service.revalidateAiKey(req.user!.id, provider);
     res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listModelsController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const { provider } = res.locals.validatedParams as ProviderParam;
+    const models: ModelInfo[] = await service.listProviderModels(req.user!.id, provider);
+    res.status(200).json(models);
   } catch (err) {
     next(err);
   }

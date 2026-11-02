@@ -14,6 +14,8 @@ import { validateProviderKey } from '../../providers/validate.js';
 import { PROVIDER_CONFIG } from '../../providers/registry.js';
 import type { ProviderId } from '../../providers/registry.js';
 import type { CreateAiKeyInput } from './ai-keys.schemas.js';
+import { getProvider } from '../../providers/index.js';
+import type { ModelInfo } from '../../providers/types.js';
 
 const masterKey = getMasterKey(env.MASTER_ENCRYPTION_KEY);
 
@@ -154,4 +156,22 @@ export async function revalidateAiKey(userId: string, provider: ProviderId) {
     .where(and(eq(apiKeys.userId, userId), eq(apiKeys.provider, provider)));
 
   return result;
+}
+
+// ─── Provider List ───────────────────────────────────────────
+export async function listProviderModels(
+  userId: string,
+  provider: ProviderId,
+): Promise<ModelInfo[]> {
+  const rows = await db
+    .select()
+    .from(apiKeys)
+    .where(and(eq(apiKeys.userId, userId), eq(apiKeys.provider, provider)))
+    .limit(1);
+
+  const row = rows[0];
+  if (!row) throw new AiKeyNotFoundError();
+
+  const plaintext = decryptStored(row);
+  return getProvider(provider).listModels(plaintext);
 }

@@ -9,6 +9,7 @@ import {
   validateController,
 } from './ai-keys.controller.js';
 import { createAiKeySchema, providerParamSchema } from './ai-keys.schemas.js';
+import { listModelsController } from './ai-keys.controller.js';
 
 export const aiKeysRouter = Router();
 
@@ -21,4 +22,9 @@ aiKeysRouter.post(
   '/:provider/validate',
   validate(providerParamSchema, 'params'),
   validateController,
+);
+aiKeysRouter.get(
+  '/:provider/models',
+  validate(providerParamSchema, 'params'),
+  listModelsController,
 );
